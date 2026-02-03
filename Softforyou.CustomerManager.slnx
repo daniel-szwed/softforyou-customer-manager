@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Application/Application.csproj" Id="d95d57e0-8d8e-4505-a2ba-fc1fda7766ba" />
+  <Project Path="DataProject/DataProject.sqlproj" Id="a3d83d0e-35d0-4142-b5d6-44552e87b18a">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Domain/Domain.csproj" Id="c0a34c9f-d01e-4e2a-a7bb-6ff4611ebe27" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="8012993b-0d8a-45f8-9e12-0737b120ebe7" />
+  <Project Path="Presentation/Presentation.csproj" Id="4dbdfcd6-50ee-406c-83d8-52dd167b79f7" />
+</Solution>

@@ -52,3 +52,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+/.vs/Softforyou.CustomerManager.slnx
+/packages
+/DataProject/DataProject.dbmdl
+/DataProject/DataProject.jfm
+/DataProject/DataProject.sqlproj.user
