@@ -11,8 +11,9 @@ namespace Infrastructure
         {
             var services = new ServiceCollection();
 
-            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ICustomerRepository, CustomersRepository>();
             services.AddTransient<IDbConnectionProvider, DbConnectionProvider>();
+            services.AddTransient<ISqlExecutor, DapperSqlExecutor>();
 
             return services.BuildServiceProvider();
         }

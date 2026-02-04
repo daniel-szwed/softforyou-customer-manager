@@ -10,13 +10,17 @@ using System;
 
 namespace Infrastructure.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomersRepository : ICustomerRepository
     {
         private readonly IDbConnectionProvider dbConnectionProvider;
+        private readonly ISqlExecutor sqlExecutor;
 
-        public CustomerRepository(IDbConnectionProvider dbConnectionProvider)
+        public CustomersRepository(
+            IDbConnectionProvider dbConnectionProvider,
+            ISqlExecutor sqlExecutor)
         {
             this.dbConnectionProvider = dbConnectionProvider;
+            this.sqlExecutor = sqlExecutor;
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer)
@@ -24,11 +28,12 @@ namespace Infrastructure.Repositories
             if (customer == null)
                 throw new ArgumentNullException(nameof(customer));
 
-            // Ensure customer has an Id
+            if (customer.Address == null)
+                throw new ArgumentNullException(nameof(customer.Address));
+
             if (customer.Id == Guid.Empty)
                 customer.Id = Guid.NewGuid();
 
-            // If customer has Address, set the same Id (1-to-1)
             if (customer.Address != null)
             {
                 if (customer.Address.Id == Guid.Empty)
@@ -49,7 +54,7 @@ namespace Infrastructure.Repositories
                             VALUES (@Id, @Name, @TaxId, @PhoneNumber, @EmailAddress, @AddressId);
                         ";
 
-                        await connection.ExecuteAsync(
+                        await sqlExecutor.ExecuteAsync(
                             sqlCustomer,
                             new
                             {
@@ -71,7 +76,7 @@ namespace Infrastructure.Repositories
                                 VALUES (@Id, @PostCode, @City, @Street, @StreetNumber, @ApartmentNumber);
                             ";
 
-                            await connection.ExecuteAsync(
+                            await sqlExecutor.ExecuteAsync(
                                 sqlAddress,
                                 new
                                 {
@@ -109,7 +114,7 @@ namespace Infrastructure.Repositories
                     {
                         // Delete customer (will cascade delete address)
                         var sql = "DELETE FROM Customers WHERE Id = @Id";
-                        await connection.ExecuteAsync(sql, new { Id = customerId }, transaction);
+                        await sqlExecutor.ExecuteAsync(sql, new { Id = customerId }, transaction);
                         transaction.Commit();
                     }
                     catch
@@ -120,7 +125,6 @@ namespace Infrastructure.Repositories
                 }
             }
         }
-
 
         public async Task<PagedResult<Customer>> GetCustomersAsync(int pageNumber, int pageSize)
         {
@@ -202,7 +206,7 @@ namespace Infrastructure.Repositories
                             WHERE Id = @Id;
                         ";
 
-                        await connection.ExecuteAsync(
+                        await sqlExecutor.ExecuteAsync(
                             sqlCustomer,
                             new
                             {
@@ -228,7 +232,7 @@ namespace Infrastructure.Repositories
                                 WHERE Id = @Id;
                             ";
 
-                            await connection.ExecuteAsync(
+                            await sqlExecutor.ExecuteAsync(
                                 sqlAddress,
                                 new
                                 {
