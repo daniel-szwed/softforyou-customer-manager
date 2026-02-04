@@ -1,8 +1,8 @@
 ﻿using System.Windows.Forms;
 
-namespace Softforyou.CustomerManager.Presentation
+namespace Softforyou.CustomerManager.Presentation.Views
 {
-    partial class EditCustomerForm
+    partial class AddCustomerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -19,7 +19,6 @@ namespace Softforyou.CustomerManager.Presentation
         private TextBox txtApartmentNumber;
         private Button btnSave;
         private Button btnCancel;
-        private Button btnDelete;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -53,18 +52,17 @@ namespace Softforyou.CustomerManager.Presentation
             this.txtApartmentNumber = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -143,21 +141,12 @@ namespace Softforyou.CustomerManager.Presentation
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(173, 146);
+            this.btnCancel.Location = new System.Drawing.Point(266, 146);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 30);
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(315, 146);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(90, 30);
-            this.btnDelete.TabIndex = 11;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // groupBox1
             // 
@@ -176,23 +165,14 @@ namespace Softforyou.CustomerManager.Presentation
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Customer data";
             // 
-            // label4
+            // label1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 100);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "E-mail";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Mobile";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Name";
             // 
             // label2
             // 
@@ -203,14 +183,23 @@ namespace Softforyou.CustomerManager.Presentation
             this.label2.TabIndex = 5;
             this.label2.Text = "TaxId";
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Name";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 74);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(38, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Mobile";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "E-mail";
             // 
             // groupBox2
             // 
@@ -230,15 +219,6 @@ namespace Softforyou.CustomerManager.Presentation
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Customer address";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(111, 100);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(12, 13);
-            this.label9.TabIndex = 9;
-            this.label9.Text = "/";
             // 
             // label5
             // 
@@ -276,16 +256,24 @@ namespace Softforyou.CustomerManager.Presentation
             this.label8.TabIndex = 4;
             this.label8.Text = "Post code";
             // 
-            // EditCustomerForm
+            // label9
             // 
-            this.ClientSize = new System.Drawing.Size(419, 184);
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(111, 100);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(12, 13);
+            this.label9.TabIndex = 9;
+            this.label9.Text = "/";
+            // 
+            // AddCustomerForm
+            // 
+            this.ClientSize = new System.Drawing.Size(419, 190);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnDelete);
-            this.Name = "EditCustomerForm";
-            this.Text = "Edit Customer";
+            this.Name = "AddCustomerForm";
+            this.Text = "Add Customer";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

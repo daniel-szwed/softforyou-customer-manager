@@ -1,4 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Repositories;
+using Infrastructure;
+using Softforyou.CustomerManager.Presentation.Presenters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,24 +9,30 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Softforyou.CustomerManager.Presentation
+namespace Softforyou.CustomerManager.Presentation.Views
 {
-    public partial class AddCustomerForm : Form
+    public partial class AddCustomerForm : Form, IAddCustomerView
     {
-        public Customer Customer { get; private set; }
+        private AddCustomerPresenter presenter;
+
+        public AutoResetEvent AddNewCustomerEvent { get; set; }
 
         public AddCustomerForm()
         {
             InitializeComponent();
+            AddNewCustomerEvent = new AutoResetEvent(false);
+            presenter = new AddCustomerPresenter(this);
         }
+
+        public event EventHandler<Customer> AddNewCustomer;
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Create customer and address objects
-            Customer = new Customer
+            var customer = new Customer
             {
                 Name = txtName.Text,
                 TaxId = txtTaxId.Text,
@@ -38,6 +47,9 @@ namespace Softforyou.CustomerManager.Presentation
                     ApartmentNumber = txtApartmentNumber.Text
                 }
             };
+
+            AddNewCustomer?.Invoke(this, customer);
+            AddNewCustomerEvent.WaitOne();
 
             this.DialogResult = DialogResult.OK;
             this.Close();

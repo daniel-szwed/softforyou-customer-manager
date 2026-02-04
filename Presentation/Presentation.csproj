@@ -112,33 +112,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddCustomerForm.cs">
+    <Compile Include="Presenters\AddCustomerPresenter.cs" />
+    <Compile Include="Presenters\CustomersPresenter.cs" />
+    <Compile Include="Presenters\EditCustomerPresenter.cs" />
+    <Compile Include="Views\AddCustomerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddCustomerForm.Designer.cs">
+    <Compile Include="Views\AddCustomerForm.Designer.cs">
       <DependentUpon>AddCustomerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomersForm.cs">
+    <Compile Include="Views\CustomersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomersForm.Designer.cs">
+    <Compile Include="Views\CustomersForm.Designer.cs">
       <DependentUpon>CustomersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditCustomerForm.cs">
+    <Compile Include="Views\EditCustomerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditCustomerForm.Designer.cs">
+    <Compile Include="Views\EditCustomerForm.Designer.cs">
       <DependentUpon>EditCustomerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AddCustomerForm.resx">
+    <Compile Include="Views\IAddCustomerView.cs" />
+    <Compile Include="Views\ICustomersView.cs" />
+    <Compile Include="Views\IEditCustomerView.cs" />
+    <EmbeddedResource Include="Views\AddCustomerForm.resx">
       <DependentUpon>AddCustomerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomersForm.resx">
+    <EmbeddedResource Include="Views\CustomersForm.resx">
       <DependentUpon>CustomersForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditCustomerForm.resx">
+    <EmbeddedResource Include="Views\EditCustomerForm.resx">
       <DependentUpon>EditCustomerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -177,5 +183,6 @@
   <ItemGroup>
     <Analyzer Include="..\packages\DevExpress.Data.25.2.4\analyzers\dotnet\DevExpress.Generator.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

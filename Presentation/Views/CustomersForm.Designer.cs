@@ -1,4 +1,4 @@
-﻿namespace Softforyou.CustomerManager.Presentation
+﻿namespace Softforyou.CustomerManager.Presentation.Views
 {
     partial class CustomersForm
     {
