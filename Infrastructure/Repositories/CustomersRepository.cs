@@ -1,24 +1,25 @@
 ﻿using Dapper;
 using Domain.Entities;
-using Domain.Repositories;
+using Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Data.SqlClient;
-using System;
 
 namespace Infrastructure.Repositories
 {
     public class CustomersRepository : ICustomerRepository
     {
+        private readonly ILogger logger;
         private readonly IDbConnectionProvider dbConnectionProvider;
         private readonly ISqlExecutor sqlExecutor;
 
         public CustomersRepository(
+            ILogger logger,
             IDbConnectionProvider dbConnectionProvider,
             ISqlExecutor sqlExecutor)
         {
+            this.logger = logger;
             this.dbConnectionProvider = dbConnectionProvider;
             this.sqlExecutor = sqlExecutor;
         }
@@ -48,10 +49,9 @@ namespace Infrastructure.Repositories
                 {
                     try
                     {
-                        // Insert Customer
                         var sqlCustomer = @"
-                            INSERT INTO Customers (Id, Name, TaxId, PhoneNumber, EmailAddress, AddressId)
-                            VALUES (@Id, @Name, @TaxId, @PhoneNumber, @EmailAddress, @AddressId);
+                            INSERT INTO Customers (Id, Name, TaxId, PhoneNumber, EmailAddress)
+                            VALUES (@Id, @Name, @TaxId, @PhoneNumber, @EmailAddress);
                         ";
 
                         await sqlExecutor.ExecuteAsync(
@@ -68,7 +68,6 @@ namespace Infrastructure.Repositories
                             transaction: transaction
                         );
 
-                        // Insert Address if exists
                         if (customer.Address != null)
                         {
                             var sqlAddress = @"
@@ -92,11 +91,14 @@ namespace Infrastructure.Repositories
                         }
 
                         transaction.Commit();
+
                         return customer;
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         transaction.Rollback();
+                        logger.Error(ex, "Cannot add customer.");
+
                         throw;
                     }
                 }
@@ -112,35 +114,32 @@ namespace Infrastructure.Repositories
                 {
                     try
                     {
-                        // Delete customer (will cascade delete address)
                         var sql = "DELETE FROM Customers WHERE Id = @Id";
                         await sqlExecutor.ExecuteAsync(sql, new { Id = customerId }, transaction);
                         transaction.Commit();
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         transaction.Rollback();
+                        logger.Error(ex, $"Deleting customer with id: {customerId} failed.");
+
                         throw;
                     }
                 }
             }
         }
 
-        public async Task<PagedResult<Customer>> GetCustomersAsync(int pageNumber, int pageSize)
+        public async Task<Customer[]> GetAllCustomersAsync()
         {
-            var lookup = new List<Customer>();
-            int totalCount = 0;
+            var customers = new List<Customer>();
 
             var sql = @"
                     SELECT
-                        c.Id, c.Name, c.TaxId, c.PhoneNumber, c.EmailAddress, c.AddressId,
-                        a.Id, a.PostCode, a.City, a.Street, a.StreetNumber, a.ApartmentNumber,
-                        COUNT(*) OVER() AS TotalCount
+                        c.Id, c.Name, c.TaxId, c.PhoneNumber, c.EmailAddress,
+                        a.Id, a.PostCode, a.City, a.Street, a.StreetNumber, a.ApartmentNumber
                     FROM Customers c
                     LEFT JOIN Addresses a ON a.Id = c.Id
-                    ORDER BY c.Name
-                    OFFSET @Offset ROWS
-                    FETCH NEXT @PageSize ROWS ONLY;
+                    ORDER BY c.Name;
                     ";
 
             using (IDbConnection connection = dbConnectionProvider.GetDbConnection())
@@ -149,34 +148,46 @@ namespace Infrastructure.Repositories
 
                 try
                 {
-                    var result = await connection.QueryAsync<Customer, Address, int, Customer>(
+                    var result = await connection.QueryAsync(
                         sql,
-                        (c, a, count) =>
+                        (Func<Customer, Address, Customer>)((c, a) =>
                         {
                             c.Address = a;
-                            totalCount = count;
-                            lookup.Add(c);
+                            customers.Add(c);
                             return c;
-                        },
-                        new
-                        {
-                            Offset = (pageNumber - 1) * pageSize,
-                            PageSize = pageSize
-                        },
-                        splitOn: "Id,TotalCount"
+                        }),
+                        splitOn: "Id"
                     );
 
-                    return new PagedResult<Customer>
-                    {
-                        Result = lookup.ToArray(),
-                        TotalCount = totalCount
-                    };
+                    return customers.ToArray();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.Error(ex, "Fetching cusomers from database failed.");
                     throw;
                 }
             }
+        }
+
+        public async Task<bool> IsTaxIdAlreadyTakenAsync(string taxId, Guid excludedCustomerId)
+        {
+            const string sql = @"
+                        SELECT 1
+                        FROM Customers
+                        WHERE TaxId = @TaxId
+                          AND Id <> @ExcludedCustomerId";
+
+            using (var connection = dbConnectionProvider.GetDbConnection())
+            {
+                connection.Open();
+
+                var result = await connection.QuerySingleOrDefaultAsync<int?>(
+                    sql,
+                    new { TaxId = taxId, ExcludedCustomerId = excludedCustomerId });
+
+                return result.HasValue;
+            }
+
         }
 
         public async Task<Customer> UpdateCustomerAsync(Customer customer)
@@ -184,7 +195,6 @@ namespace Infrastructure.Repositories
             if (customer == null)
                 throw new ArgumentNullException(nameof(customer));
 
-            // Ensure customer has an Id
             if (customer.Id == Guid.Empty)
                 throw new ArgumentException("Customer Id cannot be empty", nameof(customer));
 
@@ -250,9 +260,11 @@ namespace Infrastructure.Repositories
                         transaction.Commit();
                         return customer;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         transaction.Rollback();
+                        logger.Error(ex, $"Cannot update customer with id: {customer.Id}");
+
                         throw;
                     }
                 }

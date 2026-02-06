@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Infrastructure
+namespace Domain.Interfaces
 {
     public interface IDbConnectionProvider
     {

@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Infrastructure;
+﻿using Domain.Interfaces;
 using Infrastructure.Repositories;
 using NSubstitute;
 using System;
@@ -7,7 +6,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Tests
+namespace UnitTests
 {
     public class CustomersRepository_DeleteCustomerAsync_Tests
     {
@@ -17,6 +16,7 @@ namespace Tests
         private readonly ISqlExecutor _sqlExecutor;
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        private readonly ILogger _logger;
 
         public CustomersRepository_DeleteCustomerAsync_Tests()
         {
@@ -24,11 +24,12 @@ namespace Tests
             _sqlExecutor = Substitute.For<ISqlExecutor>();
             _connection = Substitute.For<IDbConnection>();
             _transaction = Substitute.For<IDbTransaction>();
+            _logger = Substitute.For<ILogger>();
 
             _connectionProvider.GetDbConnection().Returns(_connection);
             _connection.BeginTransaction().Returns(_transaction);
 
-            _sut = new CustomersRepository(_connectionProvider, _sqlExecutor);
+            _sut = new CustomersRepository(_logger, _connectionProvider, _sqlExecutor);
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace Tests
             await _sqlExecutor.Received(1).ExecuteAsync(
                 "DELETE FROM Customers WHERE Id = @Id",
                 Arg.Is<object>(o =>
-                    (Guid)o.GetType().GetProperty("Id")!.GetValue(o)! == customerId),
+                    (Guid)o.GetType().GetProperty("Id").GetValue(o) == customerId),
                 _transaction);
 
             _transaction.Received(1).Commit();

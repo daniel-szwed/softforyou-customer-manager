@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Validation;
+using System;
 
 namespace Domain.Entities
 {
@@ -6,12 +7,27 @@ namespace Domain.Entities
     {
         public Guid Id { get; set; }
 
+        [Required]
+        [MaxLength(200)]
         public string Name { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+
+        [Required]
+        [MaxLength(50)]
         public string TaxId { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string PhoneNumber { get; set; }
+
+        [Required]
+        [Email]
+        [MaxLength(320)]
         public string EmailAddress { get; set; }
 
-        // Navigation (optional, Dapper won’t auto-load)
+        // Navigation 
         public Address Address { get; set; }
     }
 }

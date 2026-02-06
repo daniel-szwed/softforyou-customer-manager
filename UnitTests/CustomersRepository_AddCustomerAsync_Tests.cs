@@ -1,15 +1,13 @@
 ﻿using Domain.Entities;
-using Domain.Repositories;
-using Infrastructure;
 using Infrastructure.Repositories;
 using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
-using Dapper;
 using System.Data;
+using Domain.Interfaces;
+using System.Threading.Tasks;
+using System;
+using Xunit;
 
-namespace Tests
+namespace UnitTests
 {
     public class CustomersRepository_AddCustomerAsync_Tests
     {
@@ -18,6 +16,7 @@ namespace Tests
         private readonly ISqlExecutor _sqlExecutor;
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        private readonly ILogger _logger;
 
         public CustomersRepository_AddCustomerAsync_Tests()
         {
@@ -25,11 +24,12 @@ namespace Tests
             _sqlExecutor = Substitute.For<ISqlExecutor>();
             _connection = Substitute.For<IDbConnection>();
             _transaction = Substitute.For<IDbTransaction>();
+            _logger = Substitute.For<ILogger>();
 
             _connectionProvider.GetDbConnection().Returns(_connection);
             _connection.BeginTransaction().Returns(_transaction);
 
-            _sut = new CustomersRepository(_connectionProvider, _sqlExecutor);
+            _sut = new CustomersRepository(_logger, _connectionProvider, _sqlExecutor);
         }
 
         [Fact]

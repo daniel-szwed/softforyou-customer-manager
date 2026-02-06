@@ -1,44 +1,87 @@
-﻿using Domain.Repositories;
-using Infrastructure;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Softforyou.CustomerManager.Presentation.Views;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Softforyou.CustomerManager.Presentation.Presenters
 {
     public class CustomersPresenter
     {
         private readonly ICustomersView view;
+        private readonly ILogger logger;
         private readonly ICustomerRepository customersRepository;
+        private readonly IMessageService messageService;
 
-        public CustomersPresenter(ICustomersView view)
+        public CustomersPresenter(
+            ICustomersView view,
+            ILogger logger,
+            ICustomerRepository customersRepository,
+            IMessageService messageService)
         {
             this.view = view;
-            this.customersRepository = AppServices.Get<ICustomerRepository>();
+            this.logger = logger;
+            this.customersRepository = customersRepository;
+            this.messageService = messageService;
+
             SubsribeToViewEvents();
         }
 
         private void SubsribeToViewEvents()
         {
-            view.ViewLoad += View_ViewLoad;
+            view.RefreshDataSource += View_RefreshDataSource;
+            view.DeleteCustomer += DeleteCustomerAsync;
         }
 
-        private async void View_ViewLoad(object sender, EventArgs e)
+        public async void DeleteCustomerAsync(object sender, Customer customer)
         {
-            var pagedResult = await customersRepository.GetCustomersAsync(
-                view.CurrentPage,
-                view.PageSize
-            );
+            try
+            {
+                await customersRepository.DeleteCustomerAsync(customer.Id);
 
-            view.GridControlCustomers.DataSource = pagedResult.Result;
-            view.GridControlCustomers.RefreshDataSource();
+                var dataSource = (ObservableCollection<Customer>)view.GridControlCustomers.DataSource;
+                dataSource.Remove(customer);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurs during customer deletion.");
+                messageService.ShowError(
+                    "Something went wrong.\nPlease inspect log.txt file for more details.",
+                    "Operation error");
+            }
+        }
 
-            view.TotalPages = (int)Math.Ceiling(
-                (double)pagedResult.TotalCount / view.PageSize
-            );
+        private async void View_RefreshDataSource(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is AddCustomerForm addCustomerView)
+                {
+                    var newCustomer = addCustomerView.Customer;
+                    var dataSource = (ObservableCollection<Customer>)view.GridControlCustomers.DataSource;
+                    dataSource.Add(newCustomer);
+                    view.GridControlCustomers.RefreshDataSource();
 
-            view.LabelPageInfo.Text = $"Page {view.CurrentPage} / {view.TotalPages}";
-            view.PreviousPageButton.Enabled = view.CurrentPage > 1;
-            view.NextPageButton.Enabled = view.CurrentPage < view.TotalPages;
+                    return;
+                }
+
+                if (sender is EditCustomerForm editCustomerView)
+                {
+                    return;
+                }
+
+                var customers = await customersRepository.GetAllCustomersAsync();
+
+                view.GridControlCustomers.DataSource = new ObservableCollection<Customer>(customers); ;
+                view.GridControlCustomers.RefreshDataSource();
+            }
+            catch(Exception ex) 
+            {
+                logger.Error(ex, "Something went wrong, inspect log.txt file for more details");
+                messageService.ShowError(
+                    "Something went wrong.\nPlease inspect log.txt file for more details.",
+                    "Operation error");
+            }
         }
     }
 }

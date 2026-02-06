@@ -1,7 +1,8 @@
-﻿using System.Data;
+﻿using Domain.Interfaces;
+using System.Data;
 using System.Data.SqlClient;
 
-namespace Infrastructure
+namespace Infrastructure.Data
 {
     public class DbConnectionProvider : IDbConnectionProvider
     {

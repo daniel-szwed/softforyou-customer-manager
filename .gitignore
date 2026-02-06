@@ -57,3 +57,5 @@ nunit-*.xml
 /DataProject/DataProject.dbmdl
 /DataProject/DataProject.jfm
 /DataProject/DataProject.sqlproj.user
+/.vs/ProjectEvaluation
+/Application/.vs

@@ -19,7 +19,6 @@ namespace Softforyou.CustomerManager.Presentation.Views
         private TextBox txtApartmentNumber;
         private Button btnSave;
         private Button btnCancel;
-        private Button btnDelete;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -53,7 +52,6 @@ namespace Softforyou.CustomerManager.Presentation.Views
             this.txtApartmentNumber = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -149,15 +147,6 @@ namespace Softforyou.CustomerManager.Presentation.Views
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(315, 146);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(90, 30);
-            this.btnDelete.TabIndex = 11;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // groupBox1
             // 
@@ -283,7 +272,6 @@ namespace Softforyou.CustomerManager.Presentation.Views
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnDelete);
             this.Name = "EditCustomerForm";
             this.Text = "Edit Customer";
             this.groupBox1.ResumeLayout(false);

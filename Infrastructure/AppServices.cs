@@ -1,26 +1,49 @@
-﻿using Domain.Repositories;
+﻿using Domain.Interfaces;
+using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Infrastructure
 {
-    public static class AppServices
+    public sealed class AppServices
     {
-        private static IServiceProvider CreateServiceProvider()
+        private static AppServices instance = null;
+        private static IServiceProvider serviceProvider;
+        private static readonly object _lock = new object();
+
+        private AppServices()
         {
             var services = new ServiceCollection();
 
             services.AddTransient<ICustomerRepository, CustomersRepository>();
             services.AddTransient<IDbConnectionProvider, DbConnectionProvider>();
             services.AddTransient<ISqlExecutor, DapperSqlExecutor>();
+            services.AddTransient<ILogger, FileLogger>(serviceProvider => new FileLogger("logs/log.txt"));
+            services.AddTransient<IMessageService, MessageService>();
 
-            return services.BuildServiceProvider();
+            serviceProvider = services.BuildServiceProvider();
         }
 
-        public static T Get<T>() where T : class
+        public static AppServices Instance
         {
-            return CreateServiceProvider().GetService(typeof(T)) as T;
+            get
+            {
+                lock (_lock)
+                {
+                    if (instance is null)
+                    {
+                        instance = new AppServices();
+                    }
+
+                    return instance;
+                }
+            }
+        }
+
+        public T Get<T>() where T : class
+        {
+            return serviceProvider.GetService(typeof(T)) as T;
         }
     }
 }

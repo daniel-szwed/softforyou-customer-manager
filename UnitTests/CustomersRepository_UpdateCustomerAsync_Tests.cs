@@ -1,6 +1,5 @@
-﻿using Dapper;
-using Domain.Entities;
-using Infrastructure;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.Repositories;
 using NSubstitute;
 using System;
@@ -8,7 +7,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Tests
+namespace UnitTests
 {
     public class CustomersRepository_UpdateCustomerAsync_Tests
     {
@@ -18,6 +17,7 @@ namespace Tests
         private readonly ISqlExecutor _sqlExecutor;
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        private readonly ILogger _logger;
 
         public CustomersRepository_UpdateCustomerAsync_Tests()
         {
@@ -25,11 +25,12 @@ namespace Tests
             _sqlExecutor = Substitute.For<ISqlExecutor>();
             _connection = Substitute.For<IDbConnection>();
             _transaction = Substitute.For<IDbTransaction>();
+            _logger = Substitute.For<ILogger>();
 
             _connectionProvider.GetDbConnection().Returns(_connection);
             _connection.BeginTransaction().Returns(_transaction);
 
-            _sut = new CustomersRepository(_connectionProvider, _sqlExecutor);
+            _sut = new CustomersRepository(_logger, _connectionProvider, _sqlExecutor);
         }
 
         [Fact]
@@ -101,7 +102,7 @@ namespace Tests
         [Fact]
         public async Task UpdateCustomerAsync_NullCustomer_ThrowsArgumentNullException()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _sut.UpdateCustomerAsync(null!));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _sut.UpdateCustomerAsync(null));
         }
 
         [Fact]

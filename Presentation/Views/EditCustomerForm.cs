@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
-using Domain.Repositories;
-using Infrastructure.Repositories;
+using Domain.Interfaces;
+using Infrastructure;
 using Softforyou.CustomerManager.Presentation.Presenters;
 using System;
 using System.Threading;
@@ -10,20 +10,28 @@ namespace Softforyou.CustomerManager.Presentation.Views
 {
     public partial class EditCustomerForm : Form, IEditCustomerView
     {
-        private EditCustomerPresenter presenter;
+        private readonly EditCustomerPresenter presenter;
         public event EventHandler<Customer> EditCustomer;
 
-        public Customer Customer { get; private set; }
+        public Customer Customer { get; set; }
         public AutoResetEvent EditCustomerEvent { get; set; }
+        public bool EditedSuccessfully { get; set; }
 
         public EditCustomerForm(Customer customer)
         {
             InitializeComponent();
+            presenter = new EditCustomerPresenter(
+                this,
+                AppServices.Instance.Get<ILogger>(),
+                AppServices.Instance.Get<ICustomerRepository>(),
+                AppServices.Instance.Get<IMessageService>());
             EditCustomerEvent = new AutoResetEvent(false);
-            presenter = new EditCustomerPresenter(this);
             Customer = customer ?? throw new ArgumentNullException(nameof(customer));
+            FillFormWithCustomerData();
+        }
 
-            // Fill form fields with existing data
+        private void FillFormWithCustomerData()
+        {
             txtName.Text = Customer.Name;
             txtTaxId.Text = Customer.TaxId;
             txtPhone.Text = Customer.PhoneNumber;
@@ -39,33 +47,21 @@ namespace Softforyou.CustomerManager.Presentation.Views
             }
         }
 
-        private async void btnDelete_Click(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)
         {
-            var confirm = MessageBox.Show(
-                "Are you sure you want to delete this customer?",
-                "Confirm Delete",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning
-            );
+            FillCustomerWithFormData();
 
-            if (confirm != DialogResult.Yes)
-                return;
+            EditCustomer?.Invoke(this, Customer);
+            EditCustomerEvent.WaitOne();
 
-            try
+            if (EditedSuccessfully)
             {
-                EditCustomer?.Invoke(this, Customer);
-                EditCustomerEvent.WaitOne();
-
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to delete customer: {ex.Message}");
-            }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void FillCustomerWithFormData()
         {
             Customer.Name = txtName.Text;
             Customer.TaxId = txtTaxId.Text;
@@ -80,12 +76,6 @@ namespace Softforyou.CustomerManager.Presentation.Views
             Customer.Address.Street = txtStreet.Text;
             Customer.Address.StreetNumber = txtStreetNumber.Text;
             Customer.Address.ApartmentNumber = txtApartmentNumber.Text;
-
-            EditCustomer?.Invoke(this, Customer);
-            EditCustomerEvent.WaitOne();
-
-            this.DialogResult = DialogResult.OK;
-            this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

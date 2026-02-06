@@ -1,4 +1,6 @@
 ﻿using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Grid;
+using Domain.Entities;
 using System;
 using System.Windows.Forms;
 
@@ -6,13 +8,9 @@ namespace Softforyou.CustomerManager.Presentation.Views
 {
     public interface ICustomersView
     {
-        event EventHandler ViewLoad;
-        int CurrentPage { get; set; }
-        int PageSize { get; set; }
-        int TotalPages { get; set; }
+        event EventHandler RefreshDataSource;
+        event EventHandler<Customer> DeleteCustomer;
         GridControl GridControlCustomers { get; }
-        Label LabelPageInfo { get; }
-        Button PreviousPageButton { get; }
-        Button NextPageButton { get; }
+        GridView GridViewCustomers { get; }
     }
 }

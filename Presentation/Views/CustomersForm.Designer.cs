@@ -8,9 +8,6 @@
         private System.ComponentModel.IContainer components = null;
         private DevExpress.XtraGrid.GridControl gridControlCustomers;
         private DevExpress.XtraGrid.Views.Grid.GridView gridViewCustomers;
-        private System.Windows.Forms.Button btnPreviousPage;
-        private System.Windows.Forms.Button btnNextPage;
-        private System.Windows.Forms.Label lblPageInfo;
         private System.Windows.Forms.Button btnAddCustomer;
 
         /// <summary>
@@ -36,9 +33,6 @@
         {
             this.gridControlCustomers = new DevExpress.XtraGrid.GridControl();
             this.gridViewCustomers = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.btnPreviousPage = new System.Windows.Forms.Button();
-            this.btnNextPage = new System.Windows.Forms.Button();
-            this.lblPageInfo = new System.Windows.Forms.Label();
             this.btnAddCustomer = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlCustomers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewCustomers)).BeginInit();
@@ -61,34 +55,6 @@
             this.gridViewCustomers.OptionsBehavior.Editable = false;
             this.gridViewCustomers.OptionsView.ShowAutoFilterRow = true;
             // 
-            // btnPreviousPage
-            // 
-            this.btnPreviousPage.Location = new System.Drawing.Point(12, 420);
-            this.btnPreviousPage.Name = "btnPreviousPage";
-            this.btnPreviousPage.Size = new System.Drawing.Size(120, 30);
-            this.btnPreviousPage.TabIndex = 1;
-            this.btnPreviousPage.Text = "Previous Page";
-            this.btnPreviousPage.UseVisualStyleBackColor = true;
-            // 
-            // btnNextPage
-            // 
-            this.btnNextPage.Location = new System.Drawing.Point(652, 420);
-            this.btnNextPage.Name = "btnNextPage";
-            this.btnNextPage.Size = new System.Drawing.Size(120, 30);
-            this.btnNextPage.TabIndex = 2;
-            this.btnNextPage.Text = "Next Page";
-            this.btnNextPage.UseVisualStyleBackColor = true;
-            // 
-            // lblPageInfo
-            // 
-            this.lblPageInfo.AutoSize = true;
-            this.lblPageInfo.Location = new System.Drawing.Point(350, 428);
-            this.lblPageInfo.Name = "lblPageInfo";
-            this.lblPageInfo.Size = new System.Drawing.Size(58, 13);
-            this.lblPageInfo.TabIndex = 3;
-            this.lblPageInfo.Text = "Page 1 / 1";
-            this.lblPageInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // btnAddCustomer
             // 
             this.btnAddCustomer.Location = new System.Drawing.Point(12, 460);
@@ -103,9 +69,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 502);
-            this.Controls.Add(this.lblPageInfo);
-            this.Controls.Add(this.btnNextPage);
-            this.Controls.Add(this.btnPreviousPage);
             this.Controls.Add(this.gridControlCustomers);
             this.Controls.Add(this.btnAddCustomer);
             this.Name = "CustomersForm";
@@ -113,7 +76,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridControlCustomers)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewCustomers)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

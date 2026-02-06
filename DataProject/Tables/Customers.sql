@@ -3,8 +3,8 @@
     [Id] UNIQUEIDENTIFIER NOT NULL
         CONSTRAINT PK_Customers PRIMARY KEY,
 
-    [Name] NVARCHAR(200) NULL,
-    [TaxId] NVARCHAR(50) NULL,
-    [PhoneNumber] NVARCHAR(50) NULL,
-    [EmailAddress] NVARCHAR(320) NULL
+    [Name] NVARCHAR(200) NOT NULL,
+    [TaxId] NVARCHAR(50) UNIQUE NOT NULL,
+    [PhoneNumber] NVARCHAR(50) NOT NULL,
+    [EmailAddress] NVARCHAR(320) NOT NULL
 );

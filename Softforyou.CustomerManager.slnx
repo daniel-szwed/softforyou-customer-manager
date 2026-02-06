@@ -7,5 +7,5 @@
   <Project Path="Domain/Domain.csproj" Id="c0a34c9f-d01e-4e2a-a7bb-6ff4611ebe27" />
   <Project Path="Infrastructure/Infrastructure.csproj" Id="8012993b-0d8a-45f8-9e12-0737b120ebe7" />
   <Project Path="Presentation/Presentation.csproj" Id="4dbdfcd6-50ee-406c-83d8-52dd167b79f7" />
-  <Project Path="Tests/Tests.csproj" Id="09f991d3-a4dd-4358-b3a8-adeeab546fbe" />
+  <Project Path="UnitTests/UnitTests.csproj" Id="9d962271-d411-4c39-87ca-ae38b9b7506b" />
 </Solution>

@@ -8,5 +8,7 @@ namespace Softforyou.CustomerManager.Presentation.Views
     {
         event EventHandler<Customer> EditCustomer;
         AutoResetEvent EditCustomerEvent { get; set; }
+        Customer Customer { get; set; }
+        bool EditedSuccessfully { get; set; }
     }
 }

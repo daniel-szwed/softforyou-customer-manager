@@ -1,38 +1,36 @@
 ﻿using Domain.Entities;
-using Domain.Repositories;
+using Domain.Interfaces;
 using Infrastructure;
 using Softforyou.CustomerManager.Presentation.Presenters;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Softforyou.CustomerManager.Presentation.Views
 {
     public partial class AddCustomerForm : Form, IAddCustomerView
     {
-        private AddCustomerPresenter presenter;
-
+        private readonly IAddCustomerPresenter presenter;
         public AutoResetEvent AddNewCustomerEvent { get; set; }
+        public Customer Customer { get; set; }
+        public bool AddedSuccessfully { get; set; }
 
         public AddCustomerForm()
         {
             InitializeComponent();
             AddNewCustomerEvent = new AutoResetEvent(false);
-            presenter = new AddCustomerPresenter(this);
+            presenter = new AddCustomerPresenter(
+                this,
+                AppServices.Instance.Get<ILogger>(),
+                AppServices.Instance.Get<ICustomerRepository>(),
+                AppServices.Instance.Get<IMessageService>());
         }
 
         public event EventHandler<Customer> AddNewCustomer;
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            var customer = new Customer
+            Customer = new Customer
             {
                 Name = txtName.Text,
                 TaxId = txtTaxId.Text,
@@ -48,11 +46,14 @@ namespace Softforyou.CustomerManager.Presentation.Views
                 }
             };
 
-            AddNewCustomer?.Invoke(this, customer);
+            AddNewCustomer?.Invoke(this, Customer);
             AddNewCustomerEvent.WaitOne();
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            if (AddedSuccessfully)
+            {
+                DialogResult = DialogResult.OK;
+                Close();
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
